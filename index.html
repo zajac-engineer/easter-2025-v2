@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Wielkanocny Quiz</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background-color: #f5e1a4;
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #f39c12;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            padding: 20px;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom right, #fffaf0, #ffdee9, #d0f4de);
+        }
+
+        .screen.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+            z-index: 1;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #b5651d;
+        }
+
+        .question {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .question img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            width: 80%;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        button {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e67e22;
+        }
+
+        .result img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #bouncing-egg {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 200px;
+            z-index: 2000;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-25px);
+            }
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(4px);
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .popup-content {
+            background-color: #fffaf0;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            color: #c0392b;
+            animation: scaleUp 0.3s ease;
+        }
+
+        .popup-content button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleUp {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+</div>
+
+<!-- Screens -->
+<div class="screen active" id="q1-screen">
+    <h1>🐣 Wielkanocny Quiz 🐰</h1>
+    <div class="question">
+        <img src="edmund.webp" width="300" alt="Obrazek pytania 1">
+        <p>Jak ma na imię najlepszy przyjaciel George'a, słoń?</p>
+        <input type="text" id="q1-answer">
+        <br>
+        <button onclick="checkAnswer('q1')">Dalej</button>
+    </div>
+</div>
+
+<div class="screen" id="q2-screen">
+    <div class="question">
+        <img src="bunny.webp" width="300" alt="Obrazek pytania 2">
+        <p>Szukaj tam gdzie rosną czerwone kuleczki...</p>
+        <input type="number" id="q2-answer">
+        <br>
+        <button onclick="checkAnswer('q2')">Dalej</button>
+    </div>
+</div>
+
+<div class="screen" id="q3-screen">
+    <div class="question">
+        <img src="Noxana.jpg" width="300" alt="Obrazek pytania 3">
+        <p>Jak ma na imię wężowy przyjaciel złej wróżki bat fairies NOXANY?</p>
+        <input type="text" id="q3-answer">
+        <br>
+        <button onclick="checkAnswer('q3')">Dalej</button>
+    </div>
+</div>
+
+<div class="screen" id="q4-screen">
+    <div class="question">
+        <img src="bunny.webp" width="300" alt="Obrazek pytania 4">
+        <p>Szukaj tam gdzie można budować zamki...</p>
+        <input type="number" id="q4-answer">
+        <br>
+        <button onclick="checkAnswer('q4')">Dalej</button>
+    </div>
+</div>
+
+<div class="screen" id="q5-screen">
+    <div class="question">
+        <img src="pasibrzuch.jpg" width="300" alt="Obrazek pytania 5">
+        <p>Podaj imię olbrzyma z bajki Smerfy</p>
+        <input type="text" id="q5-answer">
+        <br>
+        <button onclick="checkAnswer('q5')">Dalej</button>
+    </div>
+</div>
+
+<div class="screen" id="q6-screen">
+    <div class="question">
+        <img src="bunny.webp" width="300" alt="Obrazek pytania 6">
+        <p>Szukaj pośród wiecznej zieleni...</p>
+        <input type="number" id="q6-answer">
+        <br>
+        <button onclick="checkAnswer('q6')">Dalej</button>
+    </div>
+</div>
+
+<div class="screen" id="result-screen">
+    <div class="question result">
+        <h2>🎁 Gratulacje! Zając zostawił coś dla Ciebie w zamku na wzgórzu... 🐰</h2>
+        <img src="zamek.avif" alt="Mapa do prezentu">
+    </div>
+</div>
+
+<!-- Sound -->
+<audio id="correct-sound" src="success.mp3" preload="auto"></audio>
+<audio id="fail-sound" src="fail.mp3" preload="auto"></audio>
+
+<script>
+    const answers = {
+        q1: ["edmund"],
+        q2: ["32"],
+        q3: ["hugo"],
+        q4: ["5"],
+        q5: ["pasibrzuch"],
+        q6: ["144312324112"]
+    };
+
+    const progressSteps = {
+        q1: 16,
+        q2: 32,
+        q3: 48,
+        q4: 64,
+        q5: 80,
+        q6: 100
+    };
+
+    function normalize(input) {
+        return input.trim().toLowerCase();
+    }
+
+    function checkAnswer(qid) {
+        const input = document.getElementById(`${qid}-answer`).value;
+        const cleaned = normalize(input);
+
+        if (answers[qid].includes(cleaned)) {
+            reactToCorrectAnswer();
+            updateProgressBar(qid);
+            goToNextScreen(qid);
+        } else {
+            showPopup("Niepoprawna odpowiedź. Spróbuj ponownie!");
+            const sound = document.getElementById("fail-sound")
+            sound.currentTime = 0
+            sound.play();
+        }
+    }
+
+    function goToNextScreen(currentId) {
+        const order = ["q1", "q2", "q3", "q4", "q5", "q6", "result"];
+        const currentIndex = order.indexOf(currentId);
+        const nextScreenId = `${order[currentIndex + 1]}-screen`;
+
+        document.getElementById(`${currentId}-screen`).classList.remove("active");
+        const nextScreen = document.getElementById(nextScreenId);
+        nextScreen.classList.add("active");
+    }
+
+    function updateProgressBar(qid) {
+        const bar = document.getElementById("progress-bar");
+        bar.style.width = progressSteps[qid] + "%";
+    }
+
+    function reactToCorrectAnswer() {
+        const sound = document.getElementById("correct-sound");
+        sound.currentTime = 0;
+        sound.play();
+
+        const egg = document.getElementById("bouncing-egg");
+        egg.style.display = "block";
+        setTimeout(() => {
+            egg.style.display = "none";
+        }, 3000);
+    }
+
+    function showPopup(message) {
+        const popup = document.getElementById("custom-popup");
+        const msg = document.getElementById("popup-message");
+        msg.textContent = message;
+        popup.style.display = "flex";
+    }
+
+    function closePopup() {
+        document.getElementById("custom-popup").style.display = "none";
+    }
+
+    window.addEventListener("load", () => {
+        // Wait for user interaction to comply with mobile autoplay policies
+        const music = document.getElementById("easter-music");
+
+        function enableAudio() {
+            music.play().catch(() => {
+                // User interaction may still be required in some browsers
+                console.log("Autoplay prevented, waiting for click.");
+            });
+            document.removeEventListener("click", enableAudio);
+        }
+
+        document.addEventListener("click", enableAudio); // one-time click to allow playback
+    });
+
+</script>
+
+<!-- Bouncing Egg -->
+<img src="egg.png" alt="Skaczące jajko" id="bouncing-egg"
+     style="display: none;">
+<!-- Custom Popup Modal -->
+<div id="custom-popup" class="popup">
+    <div class="popup-content">
+        <p id="popup-message">Niepoprawna odpowiedź. Spróbuj ponownie!</p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+</div>
+
+<audio id="easter-music" loop>
+    <source src="background.mp3" type="audio/mpeg">
+</audio>
+
+</body>
+</html>
+
